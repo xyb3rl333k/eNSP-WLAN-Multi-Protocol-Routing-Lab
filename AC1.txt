@@ -1,0 +1,179 @@
+
+[V200R007C10SPC300]
+#
+ undo http secure-server enable
+#
+ set memory-usage threshold 0
+#
+ssl renegotiation-rate 1 
+#
+vlan batch 10 20 100
+#
+authentication-profile name default_authen_profile
+authentication-profile name dot1x_authen_profile
+authentication-profile name mac_authen_profile
+authentication-profile name portal_authen_profile
+authentication-profile name macportal_authen_profile
+#
+dhcp enable
+#
+diffserv domain default
+#
+radius-server template default
+#
+pki realm default
+ rsa local-key-pair default
+ enrollment self-signed
+#
+ike proposal default
+ encryption-algorithm aes-256 
+ dh group14 
+ authentication-algorithm sha2-256 
+ authentication-method pre-share
+ integrity-algorithm hmac-sha2-256 
+ prf hmac-sha2-256 
+#
+free-rule-template name default_free_rule
+#
+portal-access-profile name portal_access_profile
+#
+ip pool ap-pool
+ gateway-list 172.16.10.1 
+ network 172.16.10.0 mask 255.255.255.0 
+ lease day 5 hour 0 minute 0 
+ dns-list 8.8.8.8 
+ option 43 sub-option 3 ascii 172.16.10.1 
+#
+ip pool sta-pool
+ gateway-list 172.16.20.1 
+ network 172.16.20.0 mask 255.255.255.0 
+ lease day 5 hour 0 minute 0 
+ dns-list 8.8.8.8 
+#
+aaa
+ authentication-scheme default
+ authentication-scheme radius
+  authentication-mode radius
+ authorization-scheme default
+ accounting-scheme default
+ domain default
+  authentication-scheme radius
+  radius-server default
+ domain default_admin
+  authentication-scheme default
+ local-user admin password irreversible-cipher $1a$Ud6uP)%*E<$x8;,V(yi^1xD[@(X0Q25(;=TAMB5V@i!PbOnduA"$
+ local-user admin service-type http
+#
+interface Vlanif10
+ ip address 172.16.10.1 255.255.255.0
+ dhcp select global
+#
+interface Vlanif20
+ ip address 172.16.20.1 255.255.255.0
+ dhcp select global
+#
+interface Vlanif100
+ ip address 10.0.100.2 255.255.255.252
+#
+interface GigabitEthernet0/0/1
+ port link-type access
+ port default vlan 100
+#
+interface GigabitEthernet0/0/2
+ port link-type trunk
+ port trunk pvid vlan 10
+ port trunk allow-pass vlan 10 20
+#
+interface GigabitEthernet0/0/3
+ port link-type trunk
+ port trunk pvid vlan 10
+ port trunk allow-pass vlan 10 20
+#
+interface GigabitEthernet0/0/4
+#
+interface GigabitEthernet0/0/5
+#
+interface GigabitEthernet0/0/6
+#
+interface GigabitEthernet0/0/7
+ undo negotiation auto
+ duplex half
+#
+interface GigabitEthernet0/0/8
+ undo negotiation auto
+ duplex half
+#
+interface NULL0
+#
+ snmp-agent local-engineid 800007DB03000000000000
+ snmp-agent 
+#
+ssh server secure-algorithms cipher aes256_ctr aes128_ctr
+ssh server key-exchange dh_group14_sha1
+ssh client secure-algorithms cipher aes256_ctr aes128_ctr
+ssh client secure-algorithms hmac sha2_256
+ssh client key-exchange dh_group14_sha1
+#
+ip route-static 0.0.0.0 0.0.0.0 10.0.0.20
+ip route-static 0.0.0.0 0.0.0.0 10.0.100.1
+#
+capwap source interface vlanif10
+#
+user-interface con 0
+user-interface vty 0 4
+ protocol inbound all
+user-interface vty 16 20
+ protocol inbound all
+#
+wlan
+ traffic-profile name default
+ security-profile name Office
+  security wpa-wpa2 psk pass-phrase %^%#Dl]=,71*(DMOL..27$Q%([&`=B0@x%F\nzN]d""T%^%# aes
+ security-profile name default
+ security-profile name default-wds
+ security-profile name default-mesh
+ ssid-profile name Office
+  ssid Office_LAN
+ ssid-profile name default
+ vap-profile name Office
+  forward-mode tunnel
+  service-vlan vlan-id 20
+  ssid-profile Office
+  security-profile Office
+ vap-profile name default
+ wds-profile name default
+ mesh-handover-profile name default
+ mesh-profile name default
+ regulatory-domain-profile name default
+  country-code NG
+ air-scan-profile name default
+ rrm-profile name default
+ radio-2g-profile name default
+ radio-2g-profile name Office
+ radio-5g-profile name default
+ wids-spoof-profile name default
+ wids-profile name default
+ wireless-access-specification
+ ap-system-profile name default
+ port-link-profile name default
+ wired-port-profile name default
+ serial-profile name preset-enjoyor-toeap 
+ ap-group name Office
+  radio 0
+   vap-profile Office wlan 1
+  radio 1
+   vap-profile Office wlan 1
+ ap-group name default
+ ap-id 0 type-id 47 ap-mac 00e0-fc6a-6e90 ap-sn 2102354483107548CC60
+  ap-name Office_AP1
+  ap-group Office
+ ap-id 1 type-id 47 ap-mac 00e0-fc87-6430 ap-sn 210235448310045B8120
+  ap-name Office_AP2
+  ap-group Office
+ provision-ap
+#
+dot1x-access-profile name dot1x_access_profile
+#
+mac-access-profile name mac_access_profile
+#
+return
