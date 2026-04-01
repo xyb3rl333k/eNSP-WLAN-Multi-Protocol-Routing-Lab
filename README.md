@@ -4,12 +4,6 @@ A Huawei eNSP simulation lab covering enterprise WLAN deployment (AC+AP), multi-
 
 ---
 
-## Topology Overview
-
-![Network Topology](diagrams/topology.png)
-
----
-
 ## Network Design
 
 ### Routing Domains
